@@ -362,11 +362,10 @@ def determine_archetype(overall_score, dim_results, pains, goals):
         "Die nächsten Schritte liegen in Standardisierung, besserer Projektintegration und klarer Wertkommunikation."
     )
 
-    # Helper get score safely
     def s(dim_name, default=0):
         return d.get(dim_name, default)
 
-    # Archetype 1: Firefighters
+    # Architecture Firefighters
     if overall_score < 2.3 or "Komplexe & fragile ERP-Landschaft" in pains:
         name = "Architecture Firefighters"
         desc = (
@@ -376,7 +375,7 @@ def determine_archetype(overall_score, dim_results, pains, goals):
         )
         return name, desc
 
-    # Archetype 2: Method-heavy, low adoption
+    # Methoden-stark, aber nicht gelebt
     if s("Methoden, Modelle & Referenzarchitekturen") >= 3.2 and s("EAM in Projekten & Lösungsarchitektur") < 3:
         name = "Methoden-stark, aber nicht gelebt"
         desc = (
@@ -386,7 +385,7 @@ def determine_archetype(overall_score, dim_results, pains, goals):
         )
         return name, desc
 
-    # Archetype 3: Data-rich, low mandate
+    # Data-rich, low mandate
     if s("Tooling & Architektur-Repository") >= 3.2 and s("Strategische Verankerung & Governance") < 3:
         name = "Data-rich, low mandate"
         desc = (
@@ -396,7 +395,7 @@ def determine_archetype(overall_score, dim_results, pains, goals):
         )
         return name, desc
 
-    # Archetype 4: Value-focused transformer
+    # Value-driven Transformer
     if s("Business Value & Steuerung") >= 3.5 and "Time-to-Market / Veränderungsgeschwindigkeit" in goals:
         name = "Value-driven Transformer"
         desc = (
@@ -406,7 +405,7 @@ def determine_archetype(overall_score, dim_results, pains, goals):
         )
         return name, desc
 
-    # Archetype 5: Data & AI Ready (wenn Data/AI deutlich stärker)
+    # Data & AI Ready
     if s("Datenbasis & AI-Unterstützung im EAM") - overall_score >= 0.5:
         name = "Data & AI Ready, aber unterspannt"
         desc = (
@@ -428,7 +427,6 @@ def build_executive_summary(
     pains,
     time_horizon,
 ):
-    # Top 3 Stärken / Schwächen
     sorted_dims = sorted(dim_results.items(), key=lambda x: x[1], reverse=True)
     top3 = [f"{name} (Score {score:.2f})" for name, score in sorted_dims[:3]]
     bottom3 = [f"{name} (Score {score:.2f})" for name, score in sorted_dims[-3:]]
@@ -521,7 +519,7 @@ strukturiert zu bewerten – inkl. **EA-Maturity-Level**, **CMMI-Vergleich**,
 st.markdown("---")
 
 # -------------------------------------------------------------------
-# Form: Wir sammeln alles in einem Multi-Tab-Formular
+# Form: Multi-Tab-Formular
 # -------------------------------------------------------------------
 scores = {}
 detail_scores = []
@@ -537,7 +535,7 @@ with st.form("eam_assessment_form"):
         ]
     )
 
-    # ------------------ TAB 1: Kontext & Ziele ----------------------
+    # TAB 1: Kontext & Ziele
     with tab1:
         st.subheader("Kontext & Ziele")
         st.markdown(
@@ -570,7 +568,7 @@ von Maßnahmen.
             "Hinweis: Die Ziele und Pain Points werden später in der Executive Summary und den Handlungsempfehlungen genutzt."
         )
 
-    # ------------------ TAB 2: Kern-Dimensionen ---------------------
+    # TAB 2: Kern-Dimensionen
     with tab2:
         st.subheader("EAM-Kerndimensionen")
         st.markdown(
@@ -622,7 +620,7 @@ von Maßnahmen.
 
             st.markdown("")
 
-    # ------------------ TAB 3: Data, AI & ERP -----------------------
+    # TAB 3: Data, AI & ERP
     with tab3:
         st.subheader("Daten, AI & ERP / Core Plattformen")
         st.markdown(
@@ -674,7 +672,7 @@ von Maßnahmen.
 
             st.markdown("")
 
-    # ------------------ TAB 4: Review & Submit ----------------------
+    # TAB 4: Review & Submit
     with tab4:
         st.subheader("Review & Submit")
         st.markdown(
@@ -687,7 +685,8 @@ Anschließend erhältst du:
 - Top 3 Stärken und Schwächen  
 - Archetyp eures EAM-Setups  
 - Executive Summary zur direkten Verwendung in Slides / Dokus  
-- Roadmap (0–90 Tage, 6–12 Monate) und Workshop-Vorschlag
+- Roadmap (0–90 Tage, 6–12 Monate) – **inkl. visueller Timeline**  
+- Workshop-Vorschlag
 """
         )
 
@@ -744,9 +743,7 @@ else:
 
     st.markdown("")
 
-    # -------------------------------------------------------------------
-    # Profil je Dimension
-    # -------------------------------------------------------------------
+    # Profil & Radar
     st.markdown("### 3. Profil & Gap-Analyse je Dimension")
 
     dim_df = pd.DataFrame(
@@ -784,9 +781,7 @@ else:
     st.markdown("**Detailtabelle (mit Ampel & Gap):**")
     st.dataframe(dim_df, use_container_width=True)
 
-    # -------------------------------------------------------------------
     # Stärken / Schwächen & Archetyp
-    # -------------------------------------------------------------------
     st.markdown("### 4. Stärken, Schwächen & Archetyp")
 
     sorted_dims = sorted(dim_results.items(), key=lambda x: x[1], reverse=True)
@@ -813,9 +808,7 @@ else:
     st.markdown(f"- **{archetype_name}**")
     st.markdown(f"{archetype_desc}")
 
-    # -------------------------------------------------------------------
     # Detailergebnisse & Export
-    # -------------------------------------------------------------------
     st.markdown("### 5. Detailergebnisse & Export")
 
     detail_df = pd.DataFrame(detail_scores)
@@ -829,9 +822,7 @@ else:
         mime="text/csv",
     )
 
-    # -------------------------------------------------------------------
     # Executive Summary
-    # -------------------------------------------------------------------
     st.markdown("### 6. Executive Summary (auto-generiert)")
 
     exec_summary = build_executive_summary(
@@ -852,9 +843,7 @@ else:
         mime="text/plain",
     )
 
-    # -------------------------------------------------------------------
     # Handlungsvorschläge je Dimension
-    # -------------------------------------------------------------------
     st.markdown("### 7. Handlungsvorschläge je Dimension")
 
     for dim in DIMENSIONS:
@@ -881,9 +870,7 @@ else:
                     "Aktuell liegen hier bereits sehr gute Werte vor – Fokus auf Feintuning und kontinuierliche Verbesserung."
                 )
 
-    # -------------------------------------------------------------------
-    # Gesamt-Roadmap
-    # -------------------------------------------------------------------
+    # Gesamtbewertung & Roadmap – inkl. visueller Darstellung
     st.markdown("### 8. Gesamtbewertung & Roadmap")
 
     if overall_score < 2:
@@ -941,9 +928,50 @@ else:
     for p in phase2_points:
         st.markdown(f"- {p}")
 
-    # -------------------------------------------------------------------
+    # >>> Visuelle Roadmap (Timeline / Gantt) <<<
+    st.markdown("#### Visuelle Architektur-Roadmap (Timeline)")
+
+    roadmap_rows = []
+    # Phase 1: 0–3 Monate
+    for p in phase1_points:
+        roadmap_rows.append(
+            {
+                "Phase": "0–90 Tage",
+                "Initiative": p,
+                "Start (Monat)": 0,
+                "Ende (Monat)": 3,
+            }
+        )
+    # Phase 2: 3–12 Monate
+    for p in phase2_points:
+        roadmap_rows.append(
+            {
+                "Phase": "6–12 Monate",
+                "Initiative": p,
+                "Start (Monat)": 3,
+                "Ende (Monat)": 12,
+            }
+        )
+
+    roadmap_df = pd.DataFrame(roadmap_rows)
+
+    fig_rm = px.timeline(
+        roadmap_df,
+        x_start="Start (Monat)",
+        x_end="Ende (Monat)",
+        y="Initiative",
+        color="Phase",
+    )
+    fig_rm.update_yaxes(autorange="reversed")
+    fig_rm.update_layout(
+        xaxis_title="Zeithorizont (Monate)",
+        yaxis_title="Initiativen",
+        legend_title="Phasen",
+    )
+
+    st.plotly_chart(fig_rm, use_container_width=True)
+
     # Workshop-Vorschlag
-    # -------------------------------------------------------------------
     st.markdown("### 9. Empfohlenes Workshop-Format")
 
     st.markdown(
